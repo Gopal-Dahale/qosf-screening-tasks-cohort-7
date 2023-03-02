@@ -76,3 +76,24 @@ We now compare the runtime of JAX implementation with the default one for 2 laye
 We found that there is a `99.60 %` and `97.84 %` reduction in runtime with random and trained params respectively without compromisng on the f1 scores. These results suggest that the proposed approach can significantly improve the efficiency of the classification model without sacrificing its performance, indicating its potential for large datasets.
 
 ## Structure of repository
+
+1. `qsvc-ova-random.ipynb` implements QSVCs using One vs All stratergy with random parameters.
+2. `qsvc-ova-trained.ipynb` implements QSVCs using One vs All stratergy with trained parameters.
+3. `qsvc-ova-jax.ipynb` utilizes JAX to implement QSVCs using One vs All stratergy with random and trained parameters.
+4. `results` directory consists of the results obtained during execution of the notebook cells.
+
+We create some python files that are used in the notebooks 
+
+1. `quantum_kernel.py` implements the `QuantumKernel` class for handling creation and execution of quantum kernels.
+2. `quantum_kernel_trainer.py` implements the `QuantumKernelTrainer` class is used to train quantum kernels using kernel-target alignment.
+3. `qsvc.py` contains the `QSVC` class which is an extension of sklearn's SVC.
+4. `utils.py` contains functions to handle One vs All stratergy.
+5. `jax_utils.py` contains helper functions written in JAX.
+6. `loss_functions.py` contain a single function for kernel-target alignment.
+
+## References
+
+1. [Training and evaluating quantum kernels](https://pennylane.ai/qml/demos/tutorial_kernels_module.html)
+2. [Kernel-based training of quantum models with scikit-learn](https://pennylane.ai/qml/demos/tutorial_kernel_based_training.html)
+3. [Using JAX with PennyLane](https://pennylane.ai/qml/demos/tutorial_jax_transformations.html)
+4. [Data re-uploading for a universal quantum classifier](https://quantum-journal.org/papers/q-2020-02-06-226/)

@@ -70,7 +70,7 @@ We create three functions `square_kernel_matrix_jax`, `kernel_matrix_jax` and `t
 We now compare the runtime of JAX implementation with the default one for 2 layers and 4 qubits ansatz. The y-axis is log scaled.
 
 <p align="center">
-  <img width="500" height="auto" src="https://github.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/blob/main/results/qsvc-ova-trained-scores.png">
+  <img width="400" height="auto" src="https://github.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/blob/main/results/default_vs_jax.png">
 </p>
 
 We found that there is a `99.60 %` and `97.84 %` reduction in runtime with random and trained params respectively without compromisng on the f1 scores. These results suggest that the proposed approach can significantly improve the efficiency of the classification model without sacrificing its performance, indicating its potential for large datasets.

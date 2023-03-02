@@ -39,17 +39,40 @@ For evaluation, we vary the number of qubits and layers and obtain the [F1-score
 We first evaluate the kernel with random parameters. Below images shows the train and test f1 scores along with the runtimes.
 
 <p align="center">
-  <img width="500" height="auto" src="https://raw.githubusercontent.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/main/results/qsvc-ova-random-scores.png?token=GHSAT0AAAAAAB2LZ5KXLQ5U2GAC67LATH5AY77TJZQ">
-  <img width="500" height="auto" src="https://raw.githubusercontent.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/main/results/qsvc-ova-random-runtimes.png?token=GHSAT0AAAAAAB2LZ5KWBZM7BPAPCKMANF6KY77TMMQ">
+  <img width="500" height="auto" src="https://github.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/blob/main/results/qsvc-ova-random-scores.png">
+  <img width="500" height="auto" src="https://github.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/blob/main/results/qsvc-ova-random-runtimes.png">
 </p>
 
 It is evident that as the number of qubits increase (so is the number of trainable parameters), the train/test score increases. For a fixed layer, the scores seems to saturate with 3 and 4 qubits (although, we need to perform more rigorous testing). Its difficult to comment at this time which choice of ansatz is the best as the parameters are random. We train them and then evaluate them.
 
 Regarding the runtimes, unsuprisingly, they increase as we increase the number of qubits and layers. For a fixed layer, we are expected to see an exponential increase in the runtime with every addition of a qubit. With 4 qubits and 4 layers, it takes nearly 2000s i.e. ~33 minutes to simulate with `lightning.qubit`. There exists a accuracy and time trade off.
 
-Reference: [Data re-uploading for a universal quantum classifier](https://physics.paperswithcode.com/paper/data-re-uploading-for-a-universal-quantum)
+To train the kernel, we use kernel-target alignment method. The kernel-target alignment evaluates the similarity between the labels in the training data and those predicted by the quantum kernel. It is based on kernel alignment, which compares two kernels with known kernel matrices $K_1$ and $K_2$ to determine how similar they are.
 
-## Bonus
+We were not able to train with more than 2 layers as it was not time effective.
 
+<p align="center">
+  <img width="500" height="auto" src="https://github.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/blob/main/results/qsvc-ova-trained-scores.png">
+  <img width="500" height="auto" src="https://github.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/blob/main/results/qsvc-ova-trained-runtimes.png">
+</p>
+
+After training the kernel, the f1 scores have improved and are within 0.95 for layer 2. This comes at the cost of runtime. With 4 qubits and 2 layers the runtime being the highest 16k seconds i.e ~ 4.5 hrs. Although, training improves score, the runtime is not satisfiable with 90 training data points.
+The choice of ansatz should be determined by a balance between the f1 score and runtime
+
+## Bonus: Reducing runtime with JAX
+
+The implementation of [qml.kernels.square_kernel_matrix](https://docs.pennylane.ai/en/stable/_modules/pennylane/kernels/utils.html#square_kernel_matrix) uses nested for loops for computing the kernel matrix. It computes $\frac{1}{2}(N^2−N) kernel values for $N$ datapoints. We modify the function to use [jax.vmap](https://jax.readthedocs.io/en/latest/_autosummary/jax.vmap.html) transform to compute matrix elements in parallel. 
+
+We also use [jax.jit](https://jax.readthedocs.io/en/latest/_autosummary/jax.jit.html) transform with which JAX can compile ts computation to XLA. The compiler performs a number of optimization passes while compiling an XLA program to improve computation performance. The first time you call the function will typically be slow due to this compilation cost, but all subsequent calls will be much, much faster.
+
+We create three functions `square_kernel_matrix_jax`, `kernel_matrix_jax` and `target_alignment_jax` which will be used by QSVC with JAX.
+
+We now compare the runtime of JAX implementation with the default one for 2 layers and 4 qubits ansatz. The y-axis is log scaled.
+
+<p align="center">
+  <img width="500" height="auto" src="https://github.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/blob/main/results/qsvc-ova-trained-scores.png">
+</p>
+
+We found that there is a `99.60 %` and `97.84 %` reduction in runtime with random and trained params respectively without compromisng on the f1 scores. These results suggest that the proposed approach can significantly improve the efficiency of the classification model without sacrificing its performance, indicating its potential for large datasets.
 
 ## Structure of repository

@@ -38,6 +38,14 @@ For evaluation, we vary the number of qubits and layers and obtain the [F1-score
 
 We first evaluate the kernel with random parameters. Below images shows the train and test f1 scores along with the runtimes.
 
+<p align="center">
+  <img width="500" height="auto" src="https://raw.githubusercontent.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/main/results/qsvc-ova-random-scores.png?token=GHSAT0AAAAAAB2LZ5KXLQ5U2GAC67LATH5AY77TJZQ">
+  <img width="500" height="auto" src="https://raw.githubusercontent.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/main/results/qsvc-ova-random-runtimes.png?token=GHSAT0AAAAAAB2LZ5KWBZM7BPAPCKMANF6KY77TMMQ">
+</p>
+
+It is evident that as the number of qubits increase (so is the number of trainable parameters), the train/test score increases. For a fixed layer, the scores seems to saturate with 3 and 4 qubits (although, we need to perform more rigorous testing). Its difficult to comment at this time which choice of ansatz is the best as the parameters are random. We train them and then evaluate them.
+
+Regarding the runtimes, unsuprisingly, they increase as we increase the number of qubits and layers. For a fixed layer, we are expected to see an exponential increase in the runtime with every addition of a qubit. With 4 qubits and 4 layers, it takes nearly 2000s i.e. ~33 minutes to simulate with `lightning.qubit`. There exists a accuracy and time trade off.
 
 Reference: [Data re-uploading for a universal quantum classifier](https://physics.paperswithcode.com/paper/data-re-uploading-for-a-universal-quantum)
 

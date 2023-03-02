@@ -61,7 +61,7 @@ The choice of ansatz should be determined by a balance between the f1 score and 
 
 ## Bonus: Reducing runtime with JAX
 
-The implementation of [qml.kernels.square_kernel_matrix](https://docs.pennylane.ai/en/stable/_modules/pennylane/kernels/utils.html#square_kernel_matrix) uses nested for loops for computing the kernel matrix. It computes $\frac{1}{2}(N^2−N) kernel values for $N$ datapoints. We modify the function to use [jax.vmap](https://jax.readthedocs.io/en/latest/_autosummary/jax.vmap.html) transform to compute matrix elements in parallel. 
+The implementation of [qml.kernels.square_kernel_matrix](https://docs.pennylane.ai/en/stable/_modules/pennylane/kernels/utils.html#square_kernel_matrix) uses nested for loops for computing the kernel matrix. It computes $\frac{1}{2}(N^2−N)$ kernel values for $N$ datapoints. We modify the function to use [jax.vmap](https://jax.readthedocs.io/en/latest/_autosummary/jax.vmap.html) transform to compute matrix elements in parallel. 
 
 We also use [jax.jit](https://jax.readthedocs.io/en/latest/_autosummary/jax.jit.html) transform with which JAX can compile ts computation to XLA. The compiler performs a number of optimization passes while compiling an XLA program to improve computation performance. The first time you call the function will typically be slow due to this compilation cost, but all subsequent calls will be much, much faster.
 

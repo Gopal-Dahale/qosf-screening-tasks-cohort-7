@@ -2,20 +2,20 @@
 This repository contains the solution for QOSF screening task 3: QSVM
 
 ## Problem Statement
-Generate a Quantum Support Vector Machine (QSVM) using the iris dataset and try to propose a kernel from a parametric quantum circuit to classify the three classes(setosa, versicolor, virginica) using the one-vs-all format, the kernel only works as binary class;pification. Identify the proposal with the lowest number of qubits and depth to obtain higher accuracy. You can use the UU† format or using the Swap-Test.
+Generate a Quantum Support Vector Machine (QSVM) using the iris dataset and try to propose a kernel from a parametric quantum circuit to classify the three classes(setosa, versicolor, virginica) using the one-vs-all format, the kernel only works as a binary classification. Identify the proposal with the lowest number of qubits and depth to obtain higher accuracy. You can use the UU† format or using the Swap-Test.
 
 ## Methodoloy
 
 ### Data preprocessing
-Each data point contain 4 features. We pad to it with two zeros to make it a multiple of 3. This is necessary for the ansatz that we will use. We then perform a min-max scaling of the dataset (0 to 1). 
+Each data point contains 4 features. We pad to it with two zeros to make it a multiple of 3. This is necessary for the ansatz that we will use. We then perform a min-max scaling of the dataset (0 to 1). 
 
 The dataset contains 150 samples. We split the dataset into train (90 samples) and test (60 samples).
 
 ### Parametric quantum circuit
 
-We create a data re-uploading ansatz inspired from the paper [Data re-uploading for a universal quantum classifier](https://quantum-journal.org/papers/q-2020-02-06-226/). In brief, every feature of the input vector is multiplied with a weight and added with a bias i.e. $z_i = w_ix_i + b$. $z_i$ will be passed into a rotation gate ($R_x$, $R_y$ or $R_z$). We use th Rot gate which is $R_zR_yR_z$ repeatedly and for this the input feature vector has to be a multiple of 3. This block can then be repeated on the single qubit or on more qubits (in this case we can have CZ entanglement).
+We created a data re-uploading ansatz inspired by the paper [Data re-uploading for a universal quantum classifier](https://quantum-journal.org/papers/q-2020-02-06-226/). In brief, every feature of the input vector is multiplied with weight and added with a bias i.e. $z_i = w_ix_i + b$. $z_i$ will be passed into a rotation gate ($R_x$, $R_y$ or $R_z$). We use the Rot gate which is $R_zR_yR_z$ repeatedly and for this, the input feature vector has to be a multiple of 3. This block can then be repeated on the single qubit or on more qubits (in this case we can have CZ entanglement).
 
-The figure shows a data re-uploading ansatz for a input vector of size 3. It has 4 qubits and 2 layers.
+The figure shows a data re-uploading ansatz for an input vector of size 3. It has 4 qubits and 2 layers.
 
 ```
 0: ──H──RZ(26.54)──RY(6.94)──RZ(27.18)─╭●──RZ(34.98)──RY(7.90)──RZ(10.63)────╭Z─┤ ╭Probs
@@ -30,24 +30,24 @@ This will be the $U(x)$ where $x$ is the input feature vector. The actual ansatz
 
 One-vs-All (OVA) is a strategy to extend binary classifiers for multi-class classification problems. In this strategy, we train one binary classifier per class, where each classifier is trained to separate the samples of that class from the samples of all other classes.
 
-To use QSVC for OVA in multi-class classification, we train one binary classifier for each class. During training, we set the samples of the current class as positive (+1) and samples of all other classes as negative (-1). Once we have trained a binary classifier for each class, we can use them to predict the class of a new sample by applying each classifier to the sample and selecting the class associated with the classifier that produces the highest score.
+To use QSVC for OVA in multi-class classification, we train one binary classifier for each class. During training, we set the samples of the current class as positive (+1) and all other classes as negative (-1). Once we have trained a binary classifier for each class, we can use them to predict the class of a new sample by applying each classifier to the sample and selecting the class associated with the classifier that produces the highest score.
 
 ## Results
 
 For evaluation, we vary the number of qubits and layers and obtain the [F1-score](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html).
 
-We first evaluate the kernel with random parameters. Below images shows the train and test f1 scores along with the runtimes.
+We first evaluate the kernel with random parameters. The below images show the train and test f1 scores along with the runtimes.
 
 <p align="center">
   <img width="500" height="auto" src="https://github.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/blob/main/results/qsvc-ova-random-scores.png">
   <img width="500" height="auto" src="https://github.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/blob/main/results/qsvc-ova-random-runtimes.png">
 </p>
 
-It is evident that as the number of qubits increase (so is the number of trainable parameters), the train/test score increases. For a fixed layer, the scores seems to saturate with 3 and 4 qubits (although, we need to perform more rigorous testing). Its difficult to comment at this time which choice of ansatz is the best as the parameters are random. We train them and then evaluate them.
+It is evident that as the number of qubits increase (so is the number of trainable parameters), the train/test score increases. For a fixed layer, the scores seem to saturate with 3 and 4 qubits (although, we need to perform more rigorous testing). It's difficult to comment at this time on which choice of ansatz is the best as the parameters are random. We train them and then evaluate them.
 
-Regarding the runtimes, unsuprisingly, they increase as we increase the number of qubits and layers. For a fixed layer, we are expected to see an exponential increase in the runtime with every addition of a qubit. With 4 qubits and 4 layers, it takes nearly 2000s i.e. ~33 minutes to simulate with `lightning.qubit`. There exists a accuracy and time trade off.
+Regarding the runtimes, unsurprisingly, they increase as we increase the number of qubits and layers. For a fixed layer, we are expected to see an exponential increase in the runtime with every addition of a qubit. With 4 qubits and 4 layers, it takes nearly 2000s i.e. ~33 minutes to simulate with `lightning.qubit`. There exists an accuracy and time trade-off.
 
-To train the kernel, we use kernel-target alignment method. The kernel-target alignment evaluates the similarity between the labels in the training data and those predicted by the quantum kernel. It is based on kernel alignment, which compares two kernels with known kernel matrices $K_1$ and $K_2$ to determine how similar they are.
+To train the kernel, we use the kernel-target alignment method. The kernel-target alignment evaluates the similarity between the labels in the training data and those predicted by the quantum kernel. It is based on kernel alignment, which compares two kernels with known kernel matrices $K_1$ and $K_2$ to determine how similar they are.
 
 We were not able to train with more than 2 layers as it was not time effective.
 
@@ -56,7 +56,7 @@ We were not able to train with more than 2 layers as it was not time effective.
   <img width="500" height="auto" src="https://github.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/blob/main/results/qsvc-ova-trained-runtimes.png">
 </p>
 
-After training the kernel, the f1 scores have improved and are within 0.95 for layer 2. This comes at the cost of runtime. With 4 qubits and 2 layers the runtime being the highest 16k seconds i.e ~ 4.5 hrs. Although, training improves score, the runtime is not satisfiable with 90 training data points.
+After training the kernel, the f1 scores have improved and are within 0.95 for layer 2. This comes at the cost of runtime. With 4 qubits and 2 layers, the runtime being the highest 16k seconds i.e. ~ 4.5 hrs. Although training improves the score, the runtime is not satisfiable with 90 training data points.
 The choice of ansatz should be determined by a balance between the f1 score and runtime
 
 ## Bonus: Reducing runtime with JAX
@@ -73,21 +73,21 @@ We now compare the runtime of JAX implementation with the default one for 2 laye
   <img width="400" height="auto" src="https://github.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/blob/main/results/default_vs_jax.png">
 </p>
 
-We found that there is a `99.60 %` and `97.84 %` reduction in runtime with random and trained params respectively without compromisng on the f1 scores. These results suggest that the proposed approach can significantly improve the efficiency of the classification model without sacrificing its performance, indicating its potential for large datasets.
+We found that there is a `99.60 %` and `97.84 %` reduction in runtime with random and trained params respectively without compromising on the f1 scores. These results suggest that the proposed approach can significantly improve the efficiency of the classification model without sacrificing its performance, indicating its potential for large datasets.
 
 ## Structure of repository
 
-1. `qsvc-ova-random.ipynb` implements QSVCs using One vs All stratergy with random parameters.
-2. `qsvc-ova-trained.ipynb` implements QSVCs using One vs All stratergy with trained parameters.
-3. `qsvc-ova-jax.ipynb` utilizes JAX to implement QSVCs using One vs All stratergy with random and trained parameters.
-4. `results` directory consists of the results obtained during execution of the notebook cells.
+1. `qsvc-ova-random.ipynb` implements QSVCs using the One vs All strategy with random parameters.
+2. `qsvc-ova-trained.ipynb` implements QSVCs using the One vs All strategy with trained parameters.
+3. `qsvc-ova-jax.ipynb` utilizes JAX to implement QSVCs using the One vs All strategy with random and trained parameters.
+4. `results` directory consists of the results obtained during the execution of the notebook cells.
 
-We create some python files that are used in the notebooks 
+We create some Python files that are used in the notebooks 
 
-1. `quantum_kernel.py` implements the `QuantumKernel` class for handling creation and execution of quantum kernels.
+1. `quantum_kernel.py` implements the `QuantumKernel` class for handling the creation and execution of quantum kernels.
 2. `quantum_kernel_trainer.py` implements the `QuantumKernelTrainer` class is used to train quantum kernels using kernel-target alignment.
 3. `qsvc.py` contains the `QSVC` class which is an extension of sklearn's SVC.
-4. `utils.py` contains functions to handle One vs All stratergy.
+4. `utils.py` contains functions to handle the One vs All strategy.
 5. `jax_utils.py` contains helper functions written in JAX.
 6. `loss_functions.py` contain a single function for kernel-target alignment.
 

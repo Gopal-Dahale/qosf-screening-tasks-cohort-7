@@ -1,4 +1,4 @@
-# QOSF screening tasks cohort 7
+![qsvc-ova-trained-runtimes](https://github.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/assets/49199003/52087b5a-227a-43cc-9748-901a8433fe44)![qsvc-ova-trained-scores](https://github.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/assets/49199003/63a599b1-b494-464f-81d3-f16f584b8c9d)# QOSF screening tasks cohort 7
 This repository contains the solution for QOSF screening task 3: QSVM
 
 ## Problem Statement
@@ -39,8 +39,8 @@ For evaluation, we vary the number of qubits and layers and obtain the [F1-score
 We first evaluate the kernel with random parameters. The below images show the train and test f1 scores along with the runtimes.
 
 <p align="center">
-  <img width="500" height="auto" src="https://github.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/blob/main/results/qsvc-ova-random-scores.png">
-  <img width="500" height="auto" src="https://github.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/blob/main/results/qsvc-ova-random-runtimes.png">
+  <img width="500" height="auto" src="https://github.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/assets/49199003/f58d0b06-3308-4fa6-88a8-c622802a15ae">
+  <img width="500" height="auto" src="https://github.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/assets/49199003/e849d374-f69c-4089-b103-04991cc5e2c1">
 </p>
 
 It is evident that as the number of qubits increase (so is the number of trainable parameters), the train/test score increases. For a fixed layer, the scores seem to saturate with 3 and 4 qubits (although, we need to perform more rigorous testing). It's difficult to comment at this time on which choice of ansatz is the best as the parameters are random. We train them and then evaluate them.
@@ -52,8 +52,8 @@ To train the kernel, we use the kernel-target alignment method. The kernel-targe
 We were not able to train with more than 2 layers as it was not time effective.
 
 <p align="center">
-  <img width="500" height="auto" src="https://github.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/blob/main/results/qsvc-ova-trained-scores.png">
-  <img width="500" height="auto" src="https://github.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/blob/main/results/qsvc-ova-trained-runtimes.png">
+  <img width="500" height="auto" src="https://github.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/assets/49199003/84eb3572-0218-473b-bd1a-fd87ae1c2e1d">
+  <img width="500" height="auto" src="https://github.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/assets/49199003/772b674e-298f-4a91-8774-fc24bb677a82">
 </p>
 
 After training the kernel, the f1 scores have improved and are within 0.95 for layer 2. This comes at the cost of runtime. With 4 qubits and 2 layers, the runtime being the highest 16k seconds i.e. ~ 4.5 hrs. Although training improves the score, the runtime is not satisfiable with 90 training data points.
@@ -70,7 +70,7 @@ We create three functions `square_kernel_matrix_jax`, `kernel_matrix_jax` and `t
 We now compare the runtime of JAX implementation with the default one for 2 layers and 4 qubits ansatz. The y-axis is log scaled.
 
 <p align="center">
-  <img width="400" height="auto" src="https://github.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/blob/main/results/default_vs_jax.png">
+  <img width="400" height="auto" src="https://github.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/assets/49199003/6788112f-fbc5-4d0d-b52a-dc31dc90e66d">
 </p>
 
 We found that there is a `99.60 %` and `97.84 %` reduction in runtime with random and trained params respectively without compromising on the f1 scores. These results suggest that the proposed approach can significantly improve the efficiency of the classification model without sacrificing its performance, indicating its potential for large datasets.

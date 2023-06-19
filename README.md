@@ -1,4 +1,4 @@
-![qsvc-ova-trained-runtimes](https://github.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/assets/49199003/52087b5a-227a-43cc-9748-901a8433fe44)![qsvc-ova-trained-scores](https://github.com/Gopal-Dahale/qosf-screening-tasks-cohort-7/assets/49199003/63a599b1-b494-464f-81d3-f16f584b8c9d)# QOSF screening tasks cohort 7
+# QOSF screening tasks cohort 7
 This repository contains the solution for QOSF screening task 3: QSVM
 
 ## Problem Statement
